@@ -1,0 +1,50 @@
+# T084-PS-096 Decision Log
+
+## DEC-01: Programming Language
+**Decision:** Use Python 3.12.7.
+
+**Reason:** Python 3.10+ is explicitly permitted by the assignment.
+
+**Status:** Confirmed.
+
+## DEC-02: Monetary Calculations
+**Proposed decision:** Use Python's Decimal type for financial calculations.
+
+**Reason:** To avoid binary floating-point errors in rupee calculations.
+
+**Status:** Proposed.
+
+## DEC-03: Bidding Increment at ₹3,000
+**Issue:** The assignment specifies prices below ₹3,000 and above ₹3,000 but does not explicitly cover exactly ₹3,000.
+
+**Action:** Seek clarification from the organizers.
+
+**Status:** Open.
+
+## DEC-04: Re-Auction Floor Reduction
+**Issue:** The assignment does not fully define the mathematical interpretation of reducing the floor by 2%.
+
+**Action:** Seek clarification and document the selected formula.
+
+**Status:** Open.
+
+## DEC-05: Settlement Calculation Order
+**Issue:** The interaction between moisture deduction, foreign-matter weight deduction, gross settlement value, market fee, and agent commission must be defined precisely.
+
+**Action:** Establish a documented formula consistent with the assignment and organizer clarification.
+
+**Status:** Open.
+
+## DEC-06: Payment Penalty Calculation
+**Issue:** The treatment of partial days and the value used to calculate the daily penalty need clarification.
+
+**Action:** Ask the organizers before implementing penalty calculations.
+
+**Status:** Open.
+
+## DEC-07: Bundled Lot Withdrawal
+**Issue:** The auction treatment of remaining components after a component withdrawal is not fully specified.
+
+**Action:** Seek clarification.
+
+**Status:** Open.

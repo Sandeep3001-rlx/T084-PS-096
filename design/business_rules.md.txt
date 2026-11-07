@@ -1,0 +1,212 @@
+# T084-PS-096 Business Rule Register
+
+## Project
+Agri Mandi Electronic Auction and Commission Settlement Engine
+
+Team ID: T084  
+Language: Python 3.12.7
+
+## A. Registration and Quality Grading
+
+### BR-01: Unique Identifiers
+Every farmer, commission agent, trader, commodity, lot, auction, and settlement must have a unique identifier within its entity type.
+
+### BR-02: Trader Credit Limit
+A trader's credit limit is equal to ten times the trader's security deposit.
+
+Formula: Credit Limit = 10 × Security Deposit.
+
+### BR-03: Grade A
+A lot receives Grade A if all three conditions are satisfied:
+- Moisture ≤ 12%.
+- Foreign matter ≤ 1%.
+- Damage ≤ 2%.
+
+### BR-04: Grade B
+If the lot does not qualify for Grade A, it receives Grade B when all three conditions are satisfied:
+- Moisture ≤ 14%.
+- Foreign matter ≤ 2%.
+- Damage ≤ 4%.
+
+Otherwise, the lot receives Grade C.
+
+### BR-05: Reference Price
+The reference price depends on the grade:
+- Grade A: 100% of MSP.
+- Grade B: 97% of MSP.
+- Grade C: 92% of MSP.
+
+### BR-06: Lot Registration
+Each lot must retain its farmer, commodity, declared weight, assay results, grade, reference price, applicable agent, and current status.
+
+## B. Auction and Bidding
+
+### BR-07: Initial Price Floor
+The initial auction floor is 90% of the lot's reference price.
+
+### BR-08: Bid Floor Validation
+A bid below the applicable floor must be rejected when entered.
+
+### BR-09: Bidding Increment
+The bidding increment is ₹5 per quintal for commodities priced below ₹3,000 per quintal and ₹10 per quintal for commodities priced above ₹3,000 per quintal.
+
+The exact increment at ₹3,000 must be clarified with the organizers.
+
+### BR-10: Bid Increment Validation
+A bid must satisfy the required increment relative to the current highest valid bid. Invalid bids must be rejected.
+
+### BR-11: Auction Duration
+An auction's initial bidding window is ten minutes.
+
+### BR-12: Auction Extension
+A bid arriving during the final 60 seconds triggers a two-minute extension, provided fewer than three extensions have already been used.
+
+### BR-13: Maximum Extensions
+An auction may have at most three extensions. No additional extension is permitted after the third extension expires.
+
+### BR-14: Winner Selection
+The highest valid bid wins, provided the trader is eligible and all award conditions are satisfied.
+
+### BR-15: Tie-Breaking
+If the highest bids are identical, the earliest timestamp wins. If timestamps are identical to the millisecond, the lower trader ID wins.
+
+### BR-16: Unsold Lots
+If no valid bid is available when an auction closes, the lot is marked UNSOLD and scheduled for re-auction the following day.
+
+### BR-17: Re-Auction Floor
+The re-auction floor is reduced by 2% at each re-auction, but must never fall below 80% of reference price.
+
+The organizers should clarify whether this means a two-percentage-point reduction from reference price or a 2% reduction from the previous floor.
+
+### BR-18: Withdrawal Before Auction
+A farmer may withdraw a lot before its auction window opens without a withdrawal penalty.
+
+### BR-19: Withdrawal After Bidding Begins
+If bids already exist, a permitted farmer withdrawal incurs a penalty equal to 2% of the lot's reference value.
+
+### BR-20: Withdrawal After Award
+A farmer cannot withdraw a lot after it has been awarded to a trader.
+
+## C. Trader Eligibility and Credit Exposure
+
+### BR-21: Credit Limit Enforcement
+A trader must not exceed the applicable credit limit when placing a bid.
+
+### BR-22: Exposure Calculation
+The eligibility check must include outstanding dues, the value of lots the trader is currently winning, and the proposed bid value.
+
+The precise accounting treatment of lots already included in exposure must be defined to avoid double counting.
+
+### BR-23: Overdue Dues Restriction
+A trader with dues more than seven days overdue is barred from bidding.
+
+### BR-24: Trader Status and Ledger
+The system must track trader dues, payments, security deposit, penalties, and suspension status.
+
+## D. Weigh-In and Settlement
+
+### BR-25: Settlement Weight
+Auctions use declared weight. Financial settlement uses the actual weigh-bridge weight, subject to the permitted withdrawal rule.
+
+### BR-26: Weight Variance Withdrawal
+If actual weight differs from declared weight by more than 2%, the trader may withdraw within 30 minutes of weigh-in without penalty.
+
+### BR-27: Exact 2% Variance
+A weight difference of exactly 2% does not qualify for the withdrawal right specified in BR-26.
+
+### BR-28: Moisture Deduction
+Moisture above 12% causes a price deduction of 1% per percentage point above 12%, calculated pro rata.
+
+### BR-29: Foreign-Matter Deduction
+Foreign matter above 1% causes a weight deduction equal to the excess percentage.
+
+### BR-30: Deduction Order
+Quality deductions must be applied before calculating market fees and agent commission. The implementation must document how the moisture price deduction and foreign-matter weight deduction combine to determine settlement quantity and value.
+
+### BR-31: Market Fee
+The market fee is 1% of gross settlement value. The trader pays this fee on top of the bid value.
+
+### BR-32: Agent Commission
+Commission is 2% of gross settlement value, capped at ₹2,000 per lot, and deducted from the farmer's proceeds.
+
+### BR-33: Direct Farmer Sale
+If a lot is sold directly by the farmer without an agent, commission is zero.
+
+### BR-34: Farmer Net Payable
+Farmer net payable is calculated after the applicable quality deductions and agent commission. The final formula must reflect the agreed definition of gross settlement value.
+
+### BR-35: Payment Deadline
+The trader must pay the farmer's net payable into the market account within 24 hours of weigh-in.
+
+### BR-36: Delayed Payment Penalty
+Payment delay beyond 24 hours attracts a penalty of 1% of lot value per day for up to seven days.
+
+The organizers should clarify how partial days are counted and which value defines lot value for the penalty.
+
+### BR-37: Deposit Encashment and Suspension
+After seven days of payment delay, the trader's security deposit is encashed and the trader is suspended.
+
+### BR-38: Settlement Record
+Each settlement must retain actual weight, deductions, gross value, fees, commission, net payable, weigh-in timestamp, payment deadline, payment history, penalties, and status.
+
+## E. Bundling, Reporting, and Validation
+
+### BR-39: Minimum Lot Size
+Lots below five quintals must be bundled with other eligible lots belonging to the same farmer and grade.
+
+### BR-40: Individual Bundle Settlement
+Each component of a bundled lot must be settled individually by weight proportion.
+
+The allocation method for indivisible currency fractions must be documented.
+
+### BR-41: Component Withdrawal
+If one component of a bundle is withdrawn after bidding begins, the system must handle the withdrawal penalty and the remaining components consistently.
+
+The organizers should clarify whether the remaining components continue under the existing auction or require a revised auction.
+
+### BR-42: Daily Auction Register
+The system must print the daily auction register, including auction results, winning trader, price, and number of extensions.
+
+### BR-43: Farmer Payment Advice
+The system must generate a settlement advice for each farmer lot showing gross value, deductions, commission, net payable, and payment deadline.
+
+### BR-44: Trader Ledger
+The system must print trader transactions, purchases, fees, payments, dues, penalties, and applicable suspension or deposit-encashment entries.
+
+### BR-45: Input Validation
+Malformed, incomplete, duplicate, or inconsistent input records must be rejected or reported with clear validation errors.
+
+### BR-46: Deterministic Results
+Identical valid inputs must produce consistent auction decisions, monetary calculations, and report contents.
+
+## F. Required Edge-Case Tests
+
+The following cases must have explicit automated tests:
+
+1. Moisture exactly 12.00% versus 12.01%.
+2. A bid arriving exactly 60 seconds before the auction closes.
+3. A bid arriving in the final second of the third extension.
+4. Actual weight differing from declared weight by exactly 2.00%.
+5. Commission reaching the ₹2,000 per-lot cap.
+6. Payment made exactly 24 hours after weigh-in.
+7. An unsold lot re-auctioned on day five when the floor reaches 80% of reference price.
+8. One component of a bundled lot being withdrawn after bidding begins.
+9. Equal highest bids with different timestamps.
+10. Equal highest bids with identical timestamps to the millisecond.
+11. A trader reaching the credit limit exactly.
+12. A trader whose dues are more than seven days overdue.
+13. Moisture, foreign matter, or damage exactly at grade boundaries.
+14. A direct farmer sale without an agent.
+15. Multiple quality deductions applied before fees and commission.
+
+## G. Rule Governance
+
+Each business rule must be connected to:
+- Its implementation location.
+- At least one automated test.
+- Its expected result.
+- Any relevant design decision.
+
+Ambiguous requirements must be recorded in the decision log and clarified with the organizers wherever possible.
+
+No implementation should silently substitute an assumption for an unresolved rule that can affect evaluation results.

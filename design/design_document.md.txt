@@ -1,0 +1,130 @@
+# T084-PS-096: Agri Mandi Electronic Auction and Commission Settlement Engine
+
+## 1. Project Information
+
+- Team ID: T084
+- Problem Statement: PS-096
+- Team Members: Sai Srujan Reddy M R and Sandeep R
+- Programming Language: Python 3.12.7
+- Application Type: Command-file-driven backend
+- User Interface: Not required
+
+## 2. Problem Statement
+
+Agricultural markets need a reliable system for registering farmer lots, evaluating quality, conducting electronic auctions, checking trader credit eligibility, calculating settlements, tracking payments, and generating financial reports.
+
+This project implements a backend engine to automate these operations while enforcing the business rules specified in the assignment.
+
+## 3. Project Objectives
+
+1. Register farmers, commission agents, traders, and commodities.
+2. Register lots and calculate grades and reference prices from assay results.
+3. Conduct timed auctions with price floors, bidding increments, and extensions.
+4. Validate trader credit exposure and overdue-payment eligibility.
+5. Process weigh-in and calculate quality deductions, fees, commissions, and farmer net payable.
+6. Handle withdrawals, unsold lots, re-auctions, and bundled lots.
+7. Generate auction registers, farmer payment advices, and trader ledgers.
+8. Validate input files and produce consistent output.
+
+## 4. Proposed System Architecture
+
+### Command Processor
+Reads command files, validates commands, and coordinates the system operations.
+
+### Registration Module
+Stores and validates farmer, agent, trader, and commodity records.
+
+### Grading Module
+Calculates lot grades and reference prices using assay results and commodity MSP.
+
+### Auction Module
+Manages bidding windows, valid bids, price floors, extensions, winner selection, withdrawals, and re-auctions.
+
+### Credit Module
+Calculates trader credit limits, checks outstanding dues, evaluates bid eligibility, and tracks suspension status.
+
+### Settlement Module
+Processes weigh-in, quality deductions, market fees, agent commission, farmer payments, and penalties.
+
+### Reporting Module
+Produces the daily auction register, farmer payment advices, and trader ledgers.
+
+## 5. Data Model
+
+### Farmer
+Farmer ID and registration details.
+
+### Commission Agent
+Agent ID and registration details.
+
+### Trader
+Trader ID, security deposit, credit limit, outstanding dues, payment history, and status.
+
+### Commodity
+Commodity ID, name, MSP per quintal, quality parameters, and bidding increment.
+
+### Lot
+Lot ID, farmer ID, commodity ID, agent ID if applicable, declared weight, assay results, grade, reference price, and status.
+
+### Bid
+Bid ID, lot or bundle ID, trader ID, bid amount per quintal, timestamp, and validation result.
+
+### Auction
+Auction ID, lot or bundle ID, opening time, closing time, extension count, valid bids, winner, and result.
+
+### Settlement
+Lot ID, actual weight, quality deductions, gross settlement value, market fee, agent commission, farmer net payable, payment deadline, penalties, and payment status.
+
+### Trader Ledger
+Trader purchases, market fees, payments, outstanding dues, penalties, deposit encashment, and suspension events.
+
+## 6. Financial Calculation Policy
+
+Python Decimal arithmetic will be used for monetary values.
+
+The implementation will document the order of operations for:
+
+1. Actual settlement weight.
+2. Quality deductions.
+3. Gross settlement value.
+4. Market fee paid by the trader.
+5. Commission deducted from the farmer.
+6. Farmer net payable.
+7. Payment deadlines and overdue penalties.
+
+The precise formulas and rounding rules must be finalized in the business-rule decision log before implementation.
+
+## 7. Input and Output
+
+### Inputs
+Farmer, agent, trader, commodity, lot, assay, bid, weigh-in, and payment records supplied through command files.
+
+### Outputs
+- Daily auction register.
+- Per-lot settlement advice.
+- Trader ledger.
+- Validation errors for invalid input records.
+
+The exact file formats will be finalized when the organizer's sample files are supplied.
+
+## 8. Testing Strategy
+
+Automated tests will cover normal operations, invalid input, financial calculations, and every explicitly specified edge case.
+
+Expected outputs will be compared against actual outputs, including the visible expected results supplied by the organizers.
+
+## 9. Development and Submission Plan
+
+1. Finalize the design and business rules.
+2. Implement the backend modules.
+3. Add automated tests and verify financial calculations.
+4. Create the Git repository named T084-PS-096.
+5. Maintain a decision log and prepare the README.
+6. Generate the final design document PDF.
+7. Prepare the five-minute demo video and viva explanations.
+
+The official checkpoint dates and final deadline will be added when announced.
+
+## 10. Design Status
+
+This is the initial design draft. Business-rule interpretations, financial formulas, input formats, and edge-case decisions must be reviewed and finalized before implementation.
